@@ -1,0 +1,37 @@
+FROM rosdiscover-experiments/autoware:84169473a3f72aea8a400464f5b673f3c77c6b8c
+RUN sudo apt-get install -y software-properties-common \
+&& add-apt-repository ppa:george-edison55/cmake-3.x \
+&& apt-get update -y 
+RUN wget http://www.cmake.org/files/v3.13/cmake-3.13.4.tar.gz \
+&& tar -xvzf cmake-3.13.4.tar.gz \
+&& cd cmake-3.13.4/ \
+&& ./configure \
+&& make  \
+&& sudo make install && update-alternatives --install /usr/bin/cmake cmake /usr/local/bin/cmake 1 --force
+RUN cmake --version
+ARG LLVM_VERSION="11.1.0"
+ARG LLVM_DIR=/opt/llvm11
+RUN git clone https://github.com/tobiasduerschmid/llvm-project.git /tmp/llvm \
+ && cd /tmp/llvm \
+ && git checkout "llvmorg-${LLVM_VERSION}"
+RUN sudo apt-get install -y ninja-build
+RUN sudo add-apt-repository ppa:ubuntu-toolchain-r/test \
+&& sudo apt-get update \
+&& sudo apt-get install -y gcc-5 g++-5 \
+&& sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+RUN cd /tmp/llvm \
+ && mkdir build \
+ && cd build \
+ && cmake \
+    -DCMAKE_INSTALL_PREFIX="${LLVM_DIR}" \
+    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;libcxx;libcxxabi" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_PARALLEL_LINK_JOBS=1 \
+    -G Ninja \
+    ../llvm
+RUN ln -s /ros_ws/src/autoware/ros/build/compile_commands.json /tmp/llvm/
+RUN cd /tmp/llvm/build \
+ && ninja \
+ && ninja install \
+ && rm -rf /tmp/llvm
+RUN /opt/llvm11/bin/clang-tidy -p /ros_ws/src/autoware/ros/build/

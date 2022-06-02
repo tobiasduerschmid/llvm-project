@@ -60,8 +60,8 @@ void DivZeroChecker::checkPostStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
-  if (E->getBeginLoc().printToString(C.getSourceManager()).find("250") == -1)
-    return;
+  if (E->getBeginLoc().printToString(C.getSourceManager()).find("250") == 1)
+    cout << "YYYAYYYY!!!";
 
   cout << "DivZeroChecker::checkPostStmt" << E->getImplicitObjectArgument()->getStmtClassName();
   cout << " name: " << E->getMethodDecl()->getNameAsString();

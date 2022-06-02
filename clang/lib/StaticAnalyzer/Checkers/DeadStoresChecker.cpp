@@ -53,6 +53,9 @@ public:
   }
 
   bool VisitDeclRefExpr(DeclRefExpr *DR) {
+    SmallString<64> buf;
+    llvm::raw_svector_ostream os(buf);
+    
     if (inEH)
       if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl())) 
       {

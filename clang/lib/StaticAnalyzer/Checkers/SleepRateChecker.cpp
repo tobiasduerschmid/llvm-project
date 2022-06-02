@@ -53,8 +53,10 @@ public:
 
   bool VisitDeclRefExpr(DeclRefExpr *DR) {
     if (inEH)
-      if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl()))
+      if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl())) 
+      {        
         S.insert(D);
+      }
     return true;
   }
 
@@ -514,6 +516,7 @@ void SleepRateChecker::checkASTCodeBody(const Decl *D, AnalysisManager &mgr,
   // Proving that code in a template instantiation is "dead"
   // means proving that it is dead in all instantiations.
   // This same problem exists with -Wunreachable-code.
+  os << "SleepRateChecker";
   if (const FunctionDecl *FD = dyn_cast<FunctionDecl>(D))
     if (FD->isTemplateInstantiation())
       return;

@@ -54,8 +54,14 @@ public:
 
   bool VisitDeclRefExpr(DeclRefExpr *DR) {
     if (inEH)
-      if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl()))
+      if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl())) 
+      {
+        os << "D: " << D;
+        os << "D->getKind: " << D->getKind;
+        os << "D->getType: " << D->getType;
+        
         S.insert(D);
+      }
     return true;
   }
 

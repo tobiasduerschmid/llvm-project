@@ -30,9 +30,11 @@ RUN cd /tmp/llvm \
     -G Ninja \
     ../llvm
 RUN cd /tmp/llvm/build \
- && git fetch && git checkout 9bebe2bd626306f23eaf1d6967c492bab13297a4 \
+ && ninja
+
+RUN cd /tmp/llvm/build \
+ && git fetch && git checkout 085fe88f170c7f21cd1e33e794c33a2d4a822e21 \
  && ninja \
- && ninja install \
- && rm -rf /tmp/llvm
+ && ninja install
 #RUN . /opt/ros/indigo/setup.sh \
 # && eval 'cd /ros_ws/src/autoware/ros; export LIBRARY_PATH=/usr/lib/OpenNI2/Drivers:$LIBRARY_PATH; ./catkin_make_release -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_C_COMPILER=/opt/llvm11/bin/clang -DCMAKE_CXX_COMPILER=/opt/llvm11/bin/clang++ -DCMAKE_LINKER=/opt/llvm11/bin/ld.lld -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_LINK_EXECUTABLE=/opt/llvm11/bin/ld.lld ' 

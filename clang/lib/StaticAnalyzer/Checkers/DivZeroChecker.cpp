@@ -25,13 +25,13 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PostStmt<CXXMemberCallExpr> > {
+class DivZeroChecker : public Checker< check::PreStmt<MemberExpr> > {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPostStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
+  void checkPreStmt(const MemberExpr *B, CheckerContext &C) const;
 };
 } // end anonymous namespace
 
@@ -56,13 +56,14 @@ void DivZeroChecker::reportBug(
   }
 }
 
-void DivZeroChecker::checkPostStmt(const CXXMemberCallExpr *E,
+void DivZeroChecker::checkPreStmt(const MemberExpr *E,
                                   CheckerContext &C) const {
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
-  if (E->getBeginLoc().printToString(C.getSourceManager()).find("250") == 1)
-    cout << "YYYAYYYY!!!";
-
+  //if (E->getBeginLoc().printToString(C.getSourceManager()).find("250") == 1)
+  //  cout << "YYYAYYYY!!!";
+  cout << "getMemberNameInfo" << E->getMemberNameInfo().getAsString();
+  /*
   cout << "DivZeroChecker::checkPostStmt" << E->getImplicitObjectArgument()->getStmtClassName();
   cout << " name: " << E->getMethodDecl()->getNameAsString();
   if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
@@ -76,7 +77,7 @@ void DivZeroChecker::checkPostStmt(const CXXMemberCallExpr *E,
     if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
       cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
     }
-  }
+  }*/
     
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   cout << "\n";

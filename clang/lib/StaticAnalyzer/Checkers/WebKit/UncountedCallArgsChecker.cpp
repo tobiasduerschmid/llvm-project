@@ -19,7 +19,9 @@
 #include "clang/StaticAnalyzer/Core/BugReporter/BugType.h"
 #include "clang/StaticAnalyzer/Core/Checker.h"
 #include "llvm/ADT/DenseSet.h"
+#include <iostream>
 
+using namespace std;
 using namespace clang;
 using namespace ento;
 
@@ -62,6 +64,8 @@ public:
   }
 
   void visitCallExpr(const CallExpr *CE) const {
+    cout << "UncountedCallArgsChecker calle: " << CE->getCallee();
+
     if (shouldSkipCall(CE))
       return;
 

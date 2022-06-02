@@ -62,6 +62,7 @@ def CplusplusOptIn : Package<"cplusplus">, ParentPackage<OptIn>;
 def Valist : Package<"valist">;
 
 def DeadCode : Package<"deadcode">;
+def ROSCode : Package<"roscode">;
 def DeadCodeAlpha : Package<"deadcode">, ParentPackage<Alpha>;
 
 def Performance : Package<"performance">, ParentPackage<OptIn>;
@@ -822,6 +823,27 @@ def DeadStoresChecker : Checker<"DeadStores">,
   Documentation<HasDocumentation>;
 
 } // end DeadCode
+
+let ParentPackage = ROSCode in {
+
+def SleepRateChecker : Checker<"SleepRate">,
+  HelpText<"Finds sleep call rates">,
+  CheckerOptions<[
+    CmdLineOption<Boolean,
+                  "WarnForDeadNestedAssignments",
+                  "Warns for deadstores in nested assignments."
+                  "E.g.: if ((P = f())) where P is unused.",
+                  "true",
+                  Released>,
+    CmdLineOption<Boolean,
+                  "ShowFixIts",
+                  "Enable fix-it hints for this checker",
+                  "false",
+                  InAlpha>
+  ]>,
+  Documentation<HasDocumentation>;
+
+} // end ROSCode
 
 let ParentPackage = DeadCodeAlpha in {
 

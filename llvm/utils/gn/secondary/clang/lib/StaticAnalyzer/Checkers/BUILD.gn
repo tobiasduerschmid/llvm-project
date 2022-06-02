@@ -39,6 +39,7 @@ static_library("Checkers") {
     "ContainerModeling.cpp",
     "ConversionChecker.cpp",
     "DeadStoresChecker.cpp",
+    "SleepRateChecker.cpp",
     "DebugCheckers.cpp",
     "DebugContainerModeling.cpp",
     "DebugIteratorModeling.cpp",

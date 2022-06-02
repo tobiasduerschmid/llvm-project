@@ -65,7 +65,7 @@ void DivZeroChecker::checkPreStmt(const CallExpr *E,
     cout << "ImplicitCastExpr:" << ME->gets << "\n";
     */
 
-  cout << "DivZeroChecker::checkPreStmt" << E->getArg(0) << "\n";
+  cout << "DivZeroChecker::checkPreStmt" << E->getCalleeDecl()->getFunctionType() << "\n";
   
 }
 

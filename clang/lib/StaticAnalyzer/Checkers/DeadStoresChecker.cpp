@@ -53,6 +53,12 @@ public:
     return TraverseStmt(S->getHandlerBlock());
   }
 
+  
+  bool VisitCallExpr(const CallExpr *CE) {
+    cout << "Calle: " << CE->getCallee();
+    return true;
+  }
+
   bool VisitDeclRefExpr(DeclRefExpr *DR) {
     
     if (inEH)

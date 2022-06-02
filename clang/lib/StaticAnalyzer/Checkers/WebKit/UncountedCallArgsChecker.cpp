@@ -51,7 +51,7 @@ public:
       }
 
       bool shouldVisitTemplateInstantiations() const { return true; }
-      bool shouldVisitImplicitCode() const { return false; }
+      bool shouldVisitImplicitCode() const { return true; }
 
       bool VisitCallExpr(const CallExpr *CE) {
         Checker->visitCallExpr(CE);

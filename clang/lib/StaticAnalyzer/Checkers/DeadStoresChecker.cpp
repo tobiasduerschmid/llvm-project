@@ -54,10 +54,11 @@ public:
   }
 
   bool VisitVarDecl(const VarDecl *D) {
-        cout << "D: " << D;
-        int i = 1/0;
-        cout << "D->getKind: " << D->getKind();
-        cout << "D->getType: " << D->getType()->getTypeClassName();    
+    cout << "D: " << D;
+    int i = 1/0;
+    cout << "D->getKind: " << D->getKind();
+    cout << "D->getType: " << D->getType()->getTypeClassName();    
+    return true;
   }
 
   bool VisitDeclRefExpr(DeclRefExpr *DR) {
@@ -280,6 +281,11 @@ public:
   void CheckVarDecl(const VarDecl *VD, const Expr *Ex, const Expr *Val,
                     DeadStoreKind dsk,
                     const LiveVariables::LivenessValues &Live) {
+
+    cout << "D: " << D;
+    int i = 1/0;
+    cout << "D->getKind: " << D->getKind();
+    cout << "D->getType: " << D->getType()->getTypeClassName();    
 
     if (!VD->hasLocalStorage())
       return;

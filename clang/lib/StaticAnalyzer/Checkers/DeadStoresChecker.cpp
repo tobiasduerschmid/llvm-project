@@ -52,15 +52,13 @@ public:
   }
 
   bool VisitDeclRefExpr(DeclRefExpr *DR) {
-    SmallString<64> buf;
-    llvm::raw_svector_ostream os(buf);
     
     if (inEH)
       if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl())) 
       {
-        os << "D: " << D;
-        os << "D->getKind: " << D->getKind();
-        os << "D->getType: " << D->getType()->getTypeClassName();
+        cout << "D: " << D;
+        cout << "D->getKind: " << D->getKind();
+        cout << "D->getType: " << D->getType()->getTypeClassName();
         
         S.insert(D);
       }

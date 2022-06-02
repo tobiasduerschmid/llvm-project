@@ -76,8 +76,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     }
   }
     
-  cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
-  cout << "\n";
+  //cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
+  //cout << "\n";
 }
 
 void ento::registerDivZeroChecker(CheckerManager &mgr) {

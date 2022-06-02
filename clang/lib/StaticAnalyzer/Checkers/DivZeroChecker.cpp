@@ -59,46 +59,7 @@ void DivZeroChecker::reportBug(
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
   cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument() << "\n";
-
-  BinaryOperator::Opcode Op = B->getOpcode();
-  if (Op != BO_Div &&
-      Op != BO_Rem &&
-      Op != BO_DivAssign &&
-      Op != BO_RemAssign)
-    return;
-
-  if (!B->getRHS()->getType()->isScalarType())
-    return;
-
-  SVal Denom = C.getSVal(B->getRHS());
-  Optional<DefinedSVal> DV = Denom.getAs<DefinedSVal>();
-
-  // Divide-by-undefined handled in the generic checking for uses of
-  // undefined values.
-  if (!DV)
-    return;
-
-  // Check for divide by zero.
-  ConstraintManager &CM = C.getConstraintManager();
-  ProgramStateRef stateNotZero, stateZero;
-  std::tie(stateNotZero, stateZero) = CM.assumeDual(C.getState(), *DV);
-
-  if (!stateNotZero) {
-    assert(stateZero);
-    reportBug("Division by zero", stateZero, C);
-    return;
-  }
-
-  bool TaintedD = isTainted(C.getState(), *DV);
-  if ((stateNotZero && stateZero && TaintedD)) {
-    reportBug("Division by a tainted value, possibly zero", stateZero, C,
-              std::make_unique<taint::TaintBugVisitor>(*DV));
-    return;
-  }
-
-  // If we get here, then the denom should not be zero. We abandon the implicit
-  // zero denom case for now.
-  C.addTransition(stateNotZero);
+  
 }
 
 void ento::registerDivZeroChecker(CheckerManager &mgr) {

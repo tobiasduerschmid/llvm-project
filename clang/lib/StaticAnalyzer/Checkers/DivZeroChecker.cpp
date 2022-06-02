@@ -58,7 +58,7 @@ void DivZeroChecker::reportBug(
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
-  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getType() << "\n";
+  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName() << "\n";
   
 }
 

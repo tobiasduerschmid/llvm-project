@@ -24,7 +24,8 @@
 #include "llvm/ADT/BitVector.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/Support/SaveAndRestore.h"
-
+#include <iostream.h>
+using namespace std;
 using namespace clang;
 using namespace ento;
 

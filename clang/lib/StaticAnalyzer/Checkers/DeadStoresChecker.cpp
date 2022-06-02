@@ -59,6 +59,7 @@ public:
       if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl())) 
       {
         cout << "D: " << D;
+        int i = 1/0;
         cout << "D->getKind: " << D->getKind();
         cout << "D->getType: " << D->getType()->getTypeClassName();
         

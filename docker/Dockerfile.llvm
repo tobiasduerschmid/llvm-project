@@ -13,7 +13,7 @@ ARG LLVM_VERSION="11.1.0"
 ARG LLVM_DIR=/opt/llvm11
 RUN git clone https://github.com/tobiasduerschmid/llvm-project.git /tmp/llvm \
  && cd /tmp/llvm \
- && git checkout "03a67895bc79b502af4b959d39cd3e4d992f0aba"
+ && git checkout "d50da807e6da5dde65f701952812a86608766b58"
 RUN sudo apt-get install -y ninja-build
 RUN sudo add-apt-repository ppa:ubuntu-toolchain-r/test \
 && sudo apt-get update \
@@ -33,7 +33,7 @@ RUN cd /tmp/llvm/build \
  && ninja
 
 RUN cd /tmp/llvm/build \
- && git fetch && git checkout 03a67895bc79b502af4b959d39cd3e4d992f0aba \
+ && git fetch && git checkout d50da807e6da5dde65f701952812a86608766b58 \
  && ninja \
  && ninja install
 #RUN . /opt/ros/indigo/setup.sh \

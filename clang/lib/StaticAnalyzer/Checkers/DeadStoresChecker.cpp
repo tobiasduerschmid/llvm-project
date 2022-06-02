@@ -60,8 +60,8 @@ public:
       if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl())) 
       {
         os << "D: " << D;
-        os << "D->getKind: " << D->getKind;
-        os << "D->getType: " << D->getType;
+        os << "D->getKind: " << D->getKind();
+        os << "D->getType: " << D->getType();
         
         S.insert(D);
       }

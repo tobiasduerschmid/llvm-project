@@ -25,13 +25,13 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr> > {
+class DivZeroChecker : public Checker< check::PreStmt<CallExpr> > {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
+  void checkPreStmt(const CallExpr *B, CheckerContext &C) const;
 };
 } // end anonymous namespace
 
@@ -56,12 +56,16 @@ void DivZeroChecker::reportBug(
   }
 }
 
-void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
+void DivZeroChecker::checkPreStmt(const CallExpr *E,
                                   CheckerContext &C) const {
-  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName() << "\n";
-
+  /*cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName() << "\n";
   if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument()))
-    cout << "DivZeroChecker::checkPreStmt" << ME->getMemberNameInfo().getAsString() << "\n";
+    cout << "MemberExpr:" << ME->getMemberNameInfo().getAsString() << "\n";
+  if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getImplicitObjectArgument()))
+    cout << "ImplicitCastExpr:" << ME->gets << "\n";
+    */
+
+  cout << "DivZeroChecker::checkPreStmt" << E->getArg(0) << "\n";
   
 }
 

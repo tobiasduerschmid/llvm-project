@@ -54,14 +54,6 @@ public:
     return TraverseStmt(S->getHandlerBlock());
   }
 
-  bool VisitVarDecl(const VarDecl *D) {
-    cout << "D: " << D;
-    int i = 1/0;
-    cout << "D->getKind: " << D->getKind();
-    cout << "D->getType: " << D->getType()->getTypeClassName();    
-    return true;
-  }
-
   bool VisitDeclRefExpr(DeclRefExpr *DR) {
     
     if (inEH)
@@ -283,10 +275,7 @@ public:
                     DeadStoreKind dsk,
                     const LiveVariables::LivenessValues &Live) {
 
-    cout << "D: " << VD;
-    int i = 1/0;
-    cout << "D->getKind: " << VD->getKind();
-    cout << "D->getType: " << VD->getType()->getTypeClassName();    
+    cout << "D->getType: " << VD->getType()->getTypeClassName() << "\r\n";    
 
     if (!VD->hasLocalStorage())
       return;

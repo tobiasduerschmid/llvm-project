@@ -25,13 +25,13 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<BinaryOperator> > {
+class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr> > {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const BinaryOperator *B, CheckerContext &C) const;
+  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
 };
 } // end anonymous namespace
 
@@ -56,9 +56,9 @@ void DivZeroChecker::reportBug(
   }
 }
 
-void DivZeroChecker::checkPreStmt(const BinaryOperator *B,
+void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
-  cout << "DivZeroChecker::checkPreStmt";
+  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument() << "\n";
 
   BinaryOperator::Opcode Op = B->getOpcode();
   if (Op != BO_Div &&

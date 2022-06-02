@@ -516,6 +516,9 @@ void SleepRateChecker::checkASTCodeBody(const Decl *D, AnalysisManager &mgr,
   // Proving that code in a template instantiation is "dead"
   // means proving that it is dead in all instantiations.
   // This same problem exists with -Wunreachable-code.
+  SmallString<64> buf;
+  llvm::raw_svector_ostream os(buf);
+    
   os << "SleepRateChecker";
   if (const FunctionDecl *FD = dyn_cast<FunctionDecl>(D))
     if (FD->isTemplateInstantiation())

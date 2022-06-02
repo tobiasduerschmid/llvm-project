@@ -25,18 +25,18 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr> > {
+class DivZeroChecker : public Checker< check::PostStmt<CXXMemberCallExpr> > {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
+  void checkPostStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
 };
 } // end anonymous namespace
 
 static const Expr *getDenomExpr(const ExplodedNode *N) {
-  const Stmt *S = N->getLocationAs<PreStmt>()->getStmt();
+  const Stmt *S = N->getLocationAs<PostStmt>()->getStmt();
   if (const auto *BE = dyn_cast<BinaryOperator>(S))
     return BE->getRHS();
   return nullptr;
@@ -56,12 +56,12 @@ void DivZeroChecker::reportBug(
   }
 }
 
-void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
+void DivZeroChecker::checkPostStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
 
-  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
+  cout << "DivZeroChecker::checkPostStmt" << E->getImplicitObjectArgument()->getStmtClassName();
   cout << " name: " << E->getMethodDecl()->getNameAsString();
   if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
     cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
@@ -73,7 +73,6 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
     if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
       cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
-      SE->getDecl()
     }
   }
     

@@ -59,11 +59,14 @@ void DivZeroChecker::reportBug(
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
   cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
-  cout << " name" << E->getMethodDecl()->getNameAsString();
+  cout << " name: " << E->getMethodDecl()->getNameAsString();
   if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument()))
     cout << " DeclRefExpr:" << ME->getNameInfo().getAsString();
   if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument()))
     cout << " MemberExpr:" << ME->getMemberNameInfo().getAsString();
+  if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getImplicitObjectArgument()))
+    cout << " MemberExpr:" << ME->getCastKindName();
+  cout << "(" << E->getBeginLoc().printToString() << ":" << E->getEndLoc().printToString() << ")";
   cout << "\n";
 }
 

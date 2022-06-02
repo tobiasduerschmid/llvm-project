@@ -229,7 +229,7 @@ public:
       case DeadInit: {
         BugType = "Dead initialization";
         os << "Value stored to '" << *V
-           << "' during its initialization is never TEST read";
+           << "' during its initialization is never d50da807e6da5dde65f701952812a86608766b58 read";
 
         ASTContext &ACtx = V->getASTContext();
         if (Checker->ShowFixIts) {
@@ -255,7 +255,7 @@ public:
         LLVM_FALLTHROUGH;
       case Standard:
         if (!BugType) BugType = "Dead assignment";
-        os << "Value stored to '" << *V << "' is never TEST  read";
+        os << "Value stored to '" << *V << "' is never d50da807e6da5dde65f701952812a86608766b58  read";
         break;
 
       // eg.: f((x = foo()))
@@ -264,7 +264,7 @@ public:
           return;
         BugType = "Dead nested assignment";
         os << "Although the value stored to '" << *V
-           << "' is used in the enclosing expression, the value is TEST never "
+           << "' is used in the enclosing expression, the value is d50da807e6da5dde65f701952812a86608766b58 never "
               "actually read from '"
            << *V << "'";
         break;

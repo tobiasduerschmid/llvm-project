@@ -53,16 +53,19 @@ public:
     return TraverseStmt(S->getHandlerBlock());
   }
 
+  bool VisitVarDecl(const VarDecl *D) {
+        cout << "D: " << D;
+        int i = 1/0;
+        cout << "D->getKind: " << D->getKind();
+        cout << "D->getType: " << D->getType()->getTypeClassName();    
+  }
+
   bool VisitDeclRefExpr(DeclRefExpr *DR) {
     
     if (inEH)
       if (const VarDecl *D = dyn_cast<VarDecl>(DR->getDecl())) 
       {
-        cout << "D: " << D;
-        int i = 1/0;
-        cout << "D->getKind: " << D->getKind();
-        cout << "D->getType: " << D->getType()->getTypeClassName();
-        
+       
         S.insert(D);
       }
     return true;

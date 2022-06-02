@@ -58,7 +58,8 @@ void DivZeroChecker::reportBug(
 
 void DivZeroChecker::checkPreStmt(const BinaryOperator *B,
                                   CheckerContext &C) const {
-  cout << C << "\n";
+  cout << "DivZeroChecker::checkPreStmt";
+
   BinaryOperator::Opcode Op = B->getOpcode();
   if (Op != BO_Div &&
       Op != BO_Rem &&

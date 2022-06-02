@@ -71,7 +71,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
   }
   if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getImplicitObjectArgument())) {
     cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
-    if (const auto *SE = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
+    if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
       cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
     }
   }

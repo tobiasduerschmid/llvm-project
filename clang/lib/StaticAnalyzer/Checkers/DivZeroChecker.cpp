@@ -25,13 +25,13 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CallExpr> > {
+class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr> > {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const CallExpr *B, CheckerContext &C) const;
+  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
 };
 } // end anonymous namespace
 
@@ -56,15 +56,13 @@ void DivZeroChecker::reportBug(
   }
 }
 
-void DivZeroChecker::checkPreStmt(const CallExpr *E,
+void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
-  //cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
+  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
   cout << " name" << E->getMethodDecl()->getNameAsString();
-  /*
   if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument()))
     cout << " MemberExpr:" << ME->getMemberNameInfo().getAsString();
-    */
-  cout << "\n";
+  cout << "\n"
 }
 
 void ento::registerDivZeroChecker(CheckerManager &mgr) {

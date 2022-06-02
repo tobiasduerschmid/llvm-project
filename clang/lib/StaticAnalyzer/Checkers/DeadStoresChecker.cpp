@@ -61,7 +61,7 @@ public:
       {
         os << "D: " << D;
         os << "D->getKind: " << D->getKind();
-        os << "D->getType: " << D->getType();
+        os << "D->getType: " << D->getType()->getTypeClassName();
         
         S.insert(D);
       }

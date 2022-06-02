@@ -31,7 +31,7 @@ class DivZeroChecker : public Checker< check::PostStmt<CXXMemberCallExpr> > {
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPostStmtStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
+  void checkPostStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
 };
 } // end anonymous namespace
 

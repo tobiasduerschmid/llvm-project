@@ -17,7 +17,9 @@
 #include "clang/StaticAnalyzer/Core/Checker.h"
 #include "clang/StaticAnalyzer/Core/CheckerManager.h"
 #include "clang/StaticAnalyzer/Core/PathSensitive/CheckerContext.h"
+#include <iostream>
 
+using namespace std;
 using namespace clang;
 using namespace ento;
 using namespace taint;
@@ -56,6 +58,7 @@ void DivZeroChecker::reportBug(
 
 void DivZeroChecker::checkPreStmt(const BinaryOperator *B,
                                   CheckerContext &C) const {
+  cout << C << "\n";
   BinaryOperator::Opcode Op = B->getOpcode();
   if (Op != BO_Div &&
       Op != BO_Rem &&

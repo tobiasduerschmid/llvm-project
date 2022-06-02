@@ -56,7 +56,7 @@ public:
 
   
   bool VisitCallExpr(const CallExpr *CE) {
-    cout << "Calle: " << CE->getCallee()->getStmtClassName() << "+n";
+    cout << "Calle: " << CE->getCallee()->getStmtClassName() << "\n";
     return true;
   }
 

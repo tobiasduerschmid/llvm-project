@@ -62,9 +62,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     return;
 
   
-  if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
-    //cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
-  }
+  
   if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument())) {
     cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
     cout << " name: " << E->getMethodDecl()->getNameAsString();
@@ -80,9 +78,12 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
       cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
       cout << "\n";
     }*/
-  } else {
-    cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
-    cout << " name: " << E->getMethodDecl()->getNameAsString();
+    return;
+  } 
+  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
+  cout << " name: " << E->getMethodDecl()->getNameAsString();
+  if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
+    cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
   }
     
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";

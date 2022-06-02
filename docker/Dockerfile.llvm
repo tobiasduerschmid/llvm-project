@@ -30,9 +30,9 @@ RUN cd /tmp/llvm \
     -G Ninja \
     ../llvm
 RUN cd /tmp/llvm/build \
- && git fetch && git checkout e437c3c7cf916ad1a26eab1ceb03c725e9b34de2 \
+ && git fetch && git checkout 9bebe2bd626306f23eaf1d6967c492bab13297a4 \
  && ninja \
  && ninja install \
  && rm -rf /tmp/llvm
-RUN . /opt/ros/indigo/setup.sh \
- && eval 'cd /ros_ws/src/autoware/ros; export LIBRARY_PATH=/usr/lib/OpenNI2/Drivers:$LIBRARY_PATH; ./catkin_make_release -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_C_COMPILER=/opt/llvm11/bin/clang -DCMAKE_CXX_COMPILER=/opt/llvm11/bin/clang++ -DCMAKE_LINKER=/opt/llvm11/bin/ld.lld -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_LINK_EXECUTABLE=/opt/llvm11/bin/ld.lld ' 
+#RUN . /opt/ros/indigo/setup.sh \
+# && eval 'cd /ros_ws/src/autoware/ros; export LIBRARY_PATH=/usr/lib/OpenNI2/Drivers:$LIBRARY_PATH; ./catkin_make_release -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_C_COMPILER=/opt/llvm11/bin/clang -DCMAKE_CXX_COMPILER=/opt/llvm11/bin/clang++ -DCMAKE_LINKER=/opt/llvm11/bin/ld.lld -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_LINK_EXECUTABLE=/opt/llvm11/bin/ld.lld ' 

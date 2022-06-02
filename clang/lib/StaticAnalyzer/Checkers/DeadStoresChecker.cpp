@@ -283,10 +283,10 @@ public:
                     DeadStoreKind dsk,
                     const LiveVariables::LivenessValues &Live) {
 
-    cout << "D: " << D;
+    cout << "D: " << VD;
     int i = 1/0;
-    cout << "D->getKind: " << D->getKind();
-    cout << "D->getType: " << D->getType()->getTypeClassName();    
+    cout << "D->getKind: " << VD->getKind();
+    cout << "D->getType: " << VD->getType()->getTypeClassName();    
 
     if (!VD->hasLocalStorage())
       return;

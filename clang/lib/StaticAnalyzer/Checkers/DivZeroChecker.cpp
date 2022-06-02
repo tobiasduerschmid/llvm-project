@@ -61,8 +61,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
 
-  //cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
-  //cout << " name: " << E->getMethodDecl()->getNameAsString();
+  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
+  cout << " name: " << E->getMethodDecl()->getNameAsString();
   if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
     //cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
   }

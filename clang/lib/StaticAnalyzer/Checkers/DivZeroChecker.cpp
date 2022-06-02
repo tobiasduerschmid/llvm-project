@@ -70,14 +70,14 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     cout << " MemberExpr: " << ME->getMemberNameInfo().getAsString();
   }
   if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getImplicitObjectArgument())) {
-    //cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
+    cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
     if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
-      //cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
+      cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
     }
   }
     
-  //cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
-  //cout << "\n";
+  cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
+  cout << "\n";
 }
 
 void ento::registerDivZeroChecker(CheckerManager &mgr) {

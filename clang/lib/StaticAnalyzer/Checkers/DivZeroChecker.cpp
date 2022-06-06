@@ -79,6 +79,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
           cout << " getExtValue: " << i->getValue().getExtValue();
 
         }
+        cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
         cout << "\n";
 
       }

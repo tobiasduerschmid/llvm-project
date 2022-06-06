@@ -126,7 +126,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     //const_cast<ValueDecl*>(declRef->getDecl())->dump();
     if (auto *vd = dyn_cast<VarDecl>(declRef->getDecl())) {
       //const_cast<VarDecl*>(vd)->dump();
-      if (const_cast<VarDecl*>(vd)->hasInit()) {
+      if (vd->hasInit()) {
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;

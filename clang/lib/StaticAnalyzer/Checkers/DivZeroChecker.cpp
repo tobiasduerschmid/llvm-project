@@ -19,6 +19,7 @@
 #include "clang/StaticAnalyzer/Core/PathSensitive/CheckerContext.h"
 #include "clang/StaticAnalyzer/Core/PathSensitive/SVals.h"
 #include <iostream>
+#include <unordered_map>
 
 using namespace std;
 using namespace clang;
@@ -61,7 +62,7 @@ void DivZeroChecker::reportBug(
 }
 void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
                                   CheckerContext &C) const {
-    for(auto arg: constructor->arguments()) {
+    /*for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
         SVal Denom = C.getSVal(ic->getSubExpr());
@@ -83,8 +84,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
         cout << "\n";
 
       }
-      //cout << " arg stmn name: " << ;
-    }
+    }*/
 }
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
@@ -117,15 +117,29 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
       if (vd->hasInit()) {
         ProgramStateRef state = C.getState();
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
-          /*cout << " constructor args: ";
           for(auto arg: constructor->arguments()) {
             //Denom.getAsSymbolicExpression()->
             if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
-              SVal Denom = C.getSVal(ic);
-              cout << " arg " << ic->getSubExpr()->getStmtClassName() << " denom: " << Denom.isUnknownOrUndef();
+              SVal Denom = C.getSVal(ic->getSubExpr());
+              if (constructor->getConstructor()->getNameAsString() != "Rate")
+                return;
+              cout << "checkPostStmt: ";
+
+              cout << " constructor args: ";
+              cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+              cout << " isConstant(): " << Denom.isConstant();
+
+              Optional<ConcreteInt> i = Denom.getAs<ConcreteInt>();
+              if (i) {
+                
+                cout << " getExtValue: " << i->getValue().getExtValue();
+
+              }
+              cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
+              cout << "\n";
+
             }
-            //cout << " arg stmn name: " << ;
-          }*/
+          }
         }
         
 //        cout << "Denom: ";

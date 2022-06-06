@@ -23,6 +23,7 @@
 using namespace std;
 using namespace clang;
 using namespace ento;
+using namespace ento::nonloc;
 using namespace taint;
 
 namespace {

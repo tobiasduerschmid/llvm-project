@@ -65,8 +65,8 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
       //Denom.getAsSymbolicExpression()->
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
         SVal Denom = C.getSVal(ic->getSubExpr());
-        //if (constructor->getConstructor()->getNameAsString() != "Rate")
-        //  return;
+        if (constructor->getConstructor()->getNameAsString() != "Rate")
+          return;
         cout << "checkPostStmt: ";
 
         cout << " constructor args: ";

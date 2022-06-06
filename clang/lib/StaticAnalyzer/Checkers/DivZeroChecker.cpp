@@ -90,8 +90,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
   if (decl) {
     if (const auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
       if (vd->hasInit()) {
-        ProgramStateRef state = C.getState();
-        SVal Denom = C.getSVal(vd->getInit());
+        //ProgramStateRef state = C.getState();
+        //SVal Denom = C.getSVal(vd->getInit());
         cout << "Denom: ";
         //DefinedOrUnknownSVal ElementCount = getDynamicElementCount(
         //state, vd->getVa->getSuperRegion(), C.getSValBuilder(), ER->getValueType());

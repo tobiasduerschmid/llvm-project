@@ -88,10 +88,10 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
           cout << " constructor args: ";
           for(auto arg: constructor->arguments()) {
-            SVal Denom = C.getSVal(arg);
             //Denom.getAsSymbolicExpression()->
             if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
-              cout << " arg " << ic->getSubExpr()->getStmtClassName();
+              SVal Denom = C.getSVal(ic);
+              cout << " arg " << ic->getSubExpr()->getStmtClassName() << " denom: " << Denom.isConstant();
             }
             //cout << " arg stmn name: " << ;
           }

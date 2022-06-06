@@ -61,14 +61,15 @@ void DivZeroChecker::checkPreStmt(const CallExpr *E,
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
 
-  
+  const FunctionDecl *func = E->getDirectCallee(); //gives you callee function
+  string callee = func->getNameInfo().getName().getAsString();
+  cout << callee << " is called ";
+  cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
+  cout << "\n";
+    
   //cout << "DivZeroChecker::checkPreStmt" << E->getExprStmt()->getStmtClassName();
   //cout << " name: " << E->getMethodDecl()->getNameAsString();
 
-  const FunctionDecl *func = E->getDirectCallee(); //gives you callee function
-  string callee = func->getNameInfo().getName().getAsString();
-  cout << callee << " is called \n";
-    
   /*if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument())) {
     //cout << " MemberExpr: " << ME->getMemberNameInfo().getAsString();
   }
@@ -82,7 +83,6 @@ void DivZeroChecker::checkPreStmt(const CallExpr *E,
     //cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
   }*/
     
-  //cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   //cout << "\n";
 }
 

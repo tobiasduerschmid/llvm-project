@@ -123,7 +123,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
   }
   if (decl) {
     if (const auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
-      cout << "decl->getDecl()";
+      cout << "decl->getDecl()";/*
       if (vd->hasInit()) {
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
           int key = constructor->getID(C.getASTContext());
@@ -131,9 +131,9 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
           ProgramStateRef state = C.getState();
           /*const int* result = state->get<RateFrequency>(key);
           int r = *result;
-          cout << " getValue: " << r;*/
+          cout << " getValue: " << r;
         }
-      }
+      }*/
     }
   }
     

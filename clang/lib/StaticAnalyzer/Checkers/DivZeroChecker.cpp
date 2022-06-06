@@ -82,9 +82,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
           
           cout << " getExtValue: " << i->getValue().getExtValue();
           int key = constructor->getID(C.getASTContext());
-          int value = i->getValue().getExtValue();
-          m_cMap[key] = value;
-
+          cout << " getID: " << key;
         }
         cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
         cout << "\n";
@@ -123,29 +121,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
       if (vd->hasInit()) {
         ProgramStateRef state = C.getState();
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
-          for(auto arg: constructor->arguments()) {
-            //Denom.getAsSymbolicExpression()->
-            if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
-              SVal Denom = C.getSVal(ic->getSubExpr());
-              if (constructor->getConstructor()->getNameAsString() != "Rate")
-                return;
-              cout << "checkPostStmt: ";
-
-              cout << " constructor args: ";
-              cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
-              cout << " isConstant(): " << Denom.isConstant();
-
-              Optional<ConcreteInt> i = Denom.getAs<ConcreteInt>();
-              if (i) {
-                
-                cout << " getExtValue: " << i->getValue().getExtValue();
-
-              }
-              cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
-              cout << "\n";
-
-            }
-          }
+          int key = constructor->getID(C.getASTContext());
+          cout << " getID: " << key;
         }
         
 //        cout << "Denom: ";

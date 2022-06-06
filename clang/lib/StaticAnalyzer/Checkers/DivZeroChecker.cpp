@@ -34,12 +34,10 @@ class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>, check:
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C);
+  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
   void checkPostStmt(const CXXConstructExpr *E,
-                                  CheckerContext &C);
+                                  CheckerContext &C) const;
 
-private:
-  std::map<int, int> m_cMap;
 };
 } // end anonymous namespace
 
@@ -63,8 +61,10 @@ void DivZeroChecker::reportBug(
     C.emitReport(std::move(R));
   }
 }
+REGISTER_MAP_WITH_PROGRAMSTATE(RateFrequency, int, int)
+
 void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
-                                  CheckerContext &C) {
+                                  CheckerContext &C) const {
     for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
@@ -84,8 +84,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
           int value = i->getValue().getExtValue();
-
-          m_cMap[key] = value;
+          C.getState()->set<RateFrequency>(key, value);
 
         }
         cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
@@ -96,7 +95,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
 }
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
-                                  CheckerContext &C) {
+                                  CheckerContext &C) const {
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
 
@@ -127,6 +126,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
+          cout << " getValue: " << key; C.getState()->get<RateFrequency>(key);
         }
         
 //        cout << "Denom: ";

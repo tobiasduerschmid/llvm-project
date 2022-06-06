@@ -87,7 +87,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
           ProgramStateRef state = C.getState()->set<RateFrequency>(key, value);
           C.addTransition(state);
           const int* result = state->get<RateFrequency>(key);
-          cout << " state: " << result;
+          cout << " state: " << *result;
 
         }
         cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";

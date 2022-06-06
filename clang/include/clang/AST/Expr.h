@@ -106,7 +106,7 @@ struct SubobjectAdjustment {
 /// This represents one expression.  Note that Expr's are subclasses of Stmt.
 /// This allows an expression to be transparently used any place a Stmt is
 /// required.
-class Expr : public ValueStmt {
+class   Expr : public ValueStmt {
   QualType TR;
 
 public:

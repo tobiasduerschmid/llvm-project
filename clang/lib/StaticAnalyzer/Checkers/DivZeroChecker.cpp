@@ -17,6 +17,7 @@
 #include "clang/StaticAnalyzer/Core/Checker.h"
 #include "clang/StaticAnalyzer/Core/CheckerManager.h"
 #include "clang/StaticAnalyzer/Core/PathSensitive/CheckerContext.h"
+#include "clang/StaticAnalyzer/Core/PathSensitive/SVals.h"
 #include <iostream>
 
 using namespace std;
@@ -63,11 +64,16 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
       //Denom.getAsSymbolicExpression()->
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
         SVal Denom = C.getSVal(ic);
-        cout << "checkPostStmt: ";
-        cout << " constructor args: ";
-        cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
-        cout << "isConstant(): " << Denom.isConstant();
-        cout << "\n";
+        if (const auto *i = dyn_cast<ConcreteInt>(Denom)) {
+          
+          cout << "checkPostStmt: ";
+          cout << " constructor args: ";
+          cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+          cout << " isConstant(): " << Denom.isConstant();
+          cout << " " << I->getValue();
+
+          cout << "\n";
+        }
 
       }
       //cout << " arg stmn name: " << ;

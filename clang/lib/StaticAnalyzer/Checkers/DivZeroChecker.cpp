@@ -39,7 +39,7 @@ public:
                                   CheckerContext &C) const;
 
 private:
-  std::unordered_map<int64_t, int64_t> m_cMap;
+  std::unordered_map<int64_t, int64_t> m_cMap = {};
 };
 } // end anonymous namespace
 

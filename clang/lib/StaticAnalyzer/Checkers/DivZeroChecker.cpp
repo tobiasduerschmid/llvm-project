@@ -25,15 +25,13 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>, check::PostStmt<DeclStmt> > {
+class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>> {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
   void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
-  void checkPostStmt(const DeclStmt *S,
-                                  CheckerContext &C) const;
 };
 } // end anonymous namespace
 
@@ -56,11 +54,6 @@ void DivZeroChecker::reportBug(
     bugreporter::trackExpressionValue(N, getDenomExpr(N), *R);
     C.emitReport(std::move(R));
   }
-}
-
-void DivZeroChecker::checkPostStmt(const DeclStmt *S,
-                                  CheckerContext &C) const {
-  
 }
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,

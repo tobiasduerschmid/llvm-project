@@ -32,7 +32,7 @@ class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>, check:
 
 public:
   void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
-  void DivZeroChecker::checkPostStmt(const DeclStmt *S,
+  void checkPostStmt(const DeclStmt *S,
                                   CheckerContext &C) const;
 };
 } // end anonymous namespace

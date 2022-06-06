@@ -39,7 +39,7 @@ public:
                                   CheckerContext &C) const;
 
 private:
-  std::unordered_map<int64_t, int64_t> m_cMap = {};
+  std::unordered_map<int, int> m_cMap;
 };
 } // end anonymous namespace
 
@@ -81,7 +81,9 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
         if (i) {
           
           cout << " getExtValue: " << i->getValue().getExtValue();
-          m_cMap[constructor->getID(C.getASTContext())] = i->getValue().getExtValue();
+          int key = constructor->getID(C.getASTContext());
+          int value = i->getValue().getExtValue();
+          m_cMap[key] = value;
 
         }
         cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";

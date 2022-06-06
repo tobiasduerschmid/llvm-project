@@ -122,7 +122,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     decl = ME;
   }
   if (decl && decl->getDecl()) {
-    if (auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
+    decl->dump();
+    /*if (auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
       const_cast<VarDecl*>(vd)->dump();
       /*if (const_cast<VarDecl*>(vd)->hasInit()) {
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
@@ -136,8 +137,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
             cout << " getValue: ERROR";
           }
         }
-      }*/
-    }
+      }
+    }*/
   }
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   cout << "\n";

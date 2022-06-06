@@ -38,3 +38,37 @@ RUN cd /tmp/llvm/build \
  && ninja install
 #RUN . /opt/ros/indigo/setup.sh \
 # && eval 'cd /ros_ws/src/autoware/ros; export LIBRARY_PATH=/usr/lib/OpenNI2/Drivers:$LIBRARY_PATH; ./catkin_make_release -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_C_COMPILER=/opt/llvm11/bin/clang -DCMAKE_CXX_COMPILER=/opt/llvm11/bin/clang++ -DCMAKE_LINKER=/opt/llvm11/bin/ld.lld -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_LINK_EXECUTABLE=/opt/llvm11/bin/ld.lld ' 
+
+RUN sudo apt-get update && sudo apt-get install -y libgdm-dev libdb4o-cil-dev libpcap-dev \
+      curl \
+      doxygen \
+      gcc-multilib \
+      git \
+      python-virtualenv \
+      python-dev \
+      thrift-compiler \ 
+      libreadline-gplv2-dev \ 
+      libncursesw5-dev \
+    libssl-dev \
+    libsqlite3-dev \
+    tk-dev \
+    libgdbm-dev \
+    libc6-dev \
+    libbz2-dev
+
+RUN cd /tmp \ 
+  && wget https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz \
+  && tar -xf Python-3.8.3.tgz \ 
+  && cd Python-3.8.3 \
+  && ./configure --enable-optimizations \ 
+  && sudo make install \ 
+  && alias python3='python3.8'
+  
+
+
+RUN git clone https://github.com/Ericsson/CodeChecker.git --depth 1 ~/codechecker \
+  && cd ~/codechecker 
+#  && make venv \
+#  && source $PWD/venv/bin/activate \
+#  && make package \
+#  && export PATH="$PWD/build/CodeChecker/bin:$PATH"

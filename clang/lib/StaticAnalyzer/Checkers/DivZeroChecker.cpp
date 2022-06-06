@@ -90,7 +90,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
           for(auto arg: constructor->arguments()) {
             SVal Denom = C.getSVal(arg);
             //Denom.getAsSymbolicExpression()->
-            cout << " arg " << Denom.isConstant();
+            cout << " arg " << arg->getStmtClassName();
             //cout << " arg stmn name: " << ;
           }
         }

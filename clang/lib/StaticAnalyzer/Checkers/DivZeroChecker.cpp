@@ -71,27 +71,27 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
         SVal Denom = C.getSVal(ic->getSubExpr());
         if (constructor->getConstructor()->getNameAsString() != "Rate")
           return;
-        //cout << "checkPostStmt: ";
+        cout << "checkPostStmt: ";
 
-        //cout << " constructor args: ";
-        //cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
-        //cout << " isConstant(): " << Denom.isConstant();
+        cout << " constructor args: ";
+        cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+        cout << " isConstant(): " << Denom.isConstant();
 
         Optional<ConcreteInt> i = Denom.getAs<ConcreteInt>();
         if (i) {
           
-          //cout << " getExtValue: " << i->getValue().getExtValue();
+          cout << " getExtValue: " << i->getValue().getExtValue();
           int key = constructor->getID(C.getASTContext());
-          //cout << " getID: " << key;
+          cout << " getID: " << key;
           int value = i->getValue().getExtValue();
           ProgramStateRef state = C.getState()->set<RateFrequency>(key, value);
           C.addTransition(state);
           //const int* result = state->get<RateFrequency>(key);
-          ////cout << " state: " << *result;
+          //cout << " state: " << *result;
 
         }
-        //cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
-        //cout << "\n";
+        cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
+        cout << "\n";
 
       }
     }
@@ -103,41 +103,41 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     return;
 
   
-  //cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
-  //cout << " name: " << E->getMethodDecl()->getNameAsString();
+  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
+  cout << " name: " << E->getMethodDecl()->getNameAsString();
     
   if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument())) {
-    //cout << " MemberExpr: " << ME->getMemberNameInfo().getAsString();
+    cout << " MemberExpr: " << ME->getMemberNameInfo().getAsString();
   }
   const DeclRefExpr* decl;
   if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getImplicitObjectArgument())) {
-    //cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
+    cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
     if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
-      //cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
+      cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
       decl = SE;
     }
   } 
   else if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
-    //cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
+    cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
     decl = ME;
   }
   if (decl && decl->getDecl()) {
     if (const auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
-      //cout << "decl->getDecl()";
+      cout << "decl->getDecl()";/*
       if (vd && vd->hasInit()) {
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
           int key = constructor->getID(C.getASTContext());
-          //cout << " getID: " << key;
+          cout << " getID: " << key;
           ProgramStateRef state = C.getState();
           const int* result = state->get<RateFrequency>(key);
           int r = *result;
-          //cout << " getValue: " << r;
+          cout << " getValue: " << r;
         }
-      }
+      }*/
     }
   }
-  //cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
-  //cout << "\n";
+  cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
+  cout << "\n";
 }
 
 void ento::registerDivZeroChecker(CheckerManager &mgr) {

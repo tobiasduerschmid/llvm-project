@@ -80,7 +80,7 @@ void DivZeroChecker::checkPreStmt(const CallExpr *E,
   } 
   if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
     //cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
-  }/*
+  }*/
     
   //cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   //cout << "\n";

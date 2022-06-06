@@ -91,7 +91,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
             //Denom.getAsSymbolicExpression()->
             if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
               SVal Denom = C.getSVal(ic);
-              cout << " arg " << ic->getSubExpr()->getStmtClassName() << " denom: " << Denom.isConstant();
+              cout << " arg " << ic->getSubExpr()->getStmtClassName() << " denom: " << Denom.isUnknownOrUndef();
             }
             //cout << " arg stmn name: " << ;
           }

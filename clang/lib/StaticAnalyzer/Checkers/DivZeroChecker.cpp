@@ -87,7 +87,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
           ProgramStateRef state = C.getState()->set<RateFrequency>(key, value);
           C.addTransition(state);
           const int* result = state->get<RateFrequency>(key);
-          cout << " state: " << *result;
+          cout << " state: " << result;
 
         }
         cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
@@ -130,7 +130,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
           const int* result = state->get<RateFrequency>(key);
-          cout << " getValue: " << *result;
+          cout << " getValue: " << result;
         }
         
 //        cout << "Denom: ";

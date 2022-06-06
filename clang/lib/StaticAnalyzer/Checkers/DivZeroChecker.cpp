@@ -123,7 +123,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
   }
   if (declRef  && declRef->getDecl()) {
     //declRef->getDecl()->dump();
-    const_cast<DeclRefExpr*>(declRef->getDecl())->dump();
+    const_cast<ValueDecl*>(declRef->getDecl())->dump();
     /*if (auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
       const_cast<VarDecl*>(vd)->dump();
       /*if (const_cast<VarDecl*>(vd)->hasInit()) {

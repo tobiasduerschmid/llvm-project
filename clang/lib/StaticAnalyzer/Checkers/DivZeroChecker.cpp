@@ -34,9 +34,9 @@ class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>, check:
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
+  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C);
   void checkPostStmt(const CXXConstructExpr *E,
-                                  CheckerContext &C) const;
+                                  CheckerContext &C);
 
 private:
   std::map<int, int> m_cMap;
@@ -64,7 +64,7 @@ void DivZeroChecker::reportBug(
   }
 }
 void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
-                                  CheckerContext &C) const {
+                                  CheckerContext &C) {
     for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
@@ -84,7 +84,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
           int value = i->getValue().getExtValue();
-          
+
           m_cMap[key] = value;
 
         }
@@ -96,7 +96,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
 }
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
-                                  CheckerContext &C) const {
+                                  CheckerContext &C) {
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
 

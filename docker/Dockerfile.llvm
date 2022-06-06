@@ -34,7 +34,7 @@ RUN cd /tmp/llvm/build \
  && ninja
 
 RUN cd /tmp/llvm/build \
- && git fetch && git checkout d50da807e6da5dde65f701952812a86608766b58 \
+ && git fetch && git checkout 342b1bbf4a93a2d6212dc6f52f0beb1fabe87a91 \
  && ninja \
  && ninja install
 #RUN . /opt/ros/indigo/setup.sh \

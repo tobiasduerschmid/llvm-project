@@ -17,7 +17,6 @@
 #include "clang/StaticAnalyzer/Core/Checker.h"
 #include "clang/StaticAnalyzer/Core/CheckerManager.h"
 #include "clang/StaticAnalyzer/Core/PathSensitive/CheckerContext.h"
-#include "clang/StaticAnalyzer/Core/PathSensitive/CallEvent.h"
 #include <iostream>
 
 using namespace std;
@@ -26,14 +25,13 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker<check::PreCall, check::PreStmt<CallExpr> > {
+class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr> > {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const CallExpr *B, CheckerContext &C) const;
-  void checkPreCall(const CallEvent &Call, CheckerContext &C) const;
+  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
 };
 } // end anonymous namespace
 
@@ -57,51 +55,31 @@ void DivZeroChecker::reportBug(
     C.emitReport(std::move(R));
   }
 }
-void DivZeroChecker::checkPreCall(const CallEvent &Call, CheckerContext &C) const {
-  /*if (Call.getSourceRange().getBegin().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
-    return;
-  if (const AnyFunctionCall *AC = dyn_cast<AnyFunctionCall>(&Call)) {
-    cout << "checkPreCall: " << AC->getDecl()->getNameAsString() << "\n";
-  }*/
-}
 
-void DivZeroChecker::checkPreStmt(const CallExpr *E,
+void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
 
-  const FunctionDecl *func = E->getDirectCallee(); //gives you callee function
-  string callee = func->getNameInfo().getName().getAsString();
-  if (const auto *ME = dyn_cast<MemberExpr>(E->getCallee())) {
+  
+  cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
+  cout << " name: " << E->getMethodDecl()->getNameAsString();
+    
+  if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument())) {
     cout << " MemberExpr: " << ME->getMemberNameInfo().getAsString();
   }
-  if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getCallee())) {
+  if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getImplicitObjectArgument())) {
     cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
     if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
       cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
     }
   } 
-  cout << callee << " is called ";
+  if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
+    cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
+  }
+    
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   cout << "\n";
-    
-  //cout << "DivZeroChecker::checkPreStmt" << E->getExprStmt()->getStmtClassName();
-  //cout << " name: " << E->getMethodDecl()->getNameAsString();
-
-  /*if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument())) {
-    //cout << " MemberExpr: " << ME->getMemberNameInfo().getAsString();
-  }
-  if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getImplicitObjectArgument())) {
-    //cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
-    if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
-      //cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
-    }
-  } 
-  if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
-    //cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
-  }*/
-    
-  //cout << "\n";
 }
 
 void ento::registerDivZeroChecker(CheckerManager &mgr) {

@@ -65,7 +65,7 @@ void DivZeroChecker::checkPreStmt(const CallExpr *E,
   //cout << "DivZeroChecker::checkPreStmt" << E->getExprStmt()->getStmtClassName();
   //cout << " name: " << E->getMethodDecl()->getNameAsString();
 
-  FunctionDecl *func = E->getDirectCallee(); //gives you callee function
+  const FunctionDecl *func = E->getDirectCallee(); //gives you callee function
   string callee = func->getNameInfo().getName().getAsString();
   cout << callee << " is called ";
     

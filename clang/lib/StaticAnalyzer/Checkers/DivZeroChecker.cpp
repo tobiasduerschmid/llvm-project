@@ -66,16 +66,18 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
         SVal Denom = C.getSVal(ic);
         Optional<ConcreteInt> i = Denom.getAs<ConcreteInt>();
+        cout << "checkPostStmt: " << constructor->getConstructor()->getNameAsString();
+
+        cout << " constructor args: ";
+        cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+        cout << " isConstant(): " << Denom.isConstant();
+        
         if (i) {
           
-          cout << "checkPostStmt: ";
-          cout << " constructor args: ";
-          cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
-          cout << " isConstant(): " << Denom.isConstant();
-          cout << " " << i->getValue().getExtValue();
+          cout << " getExtValue: " << i->getValue().getExtValue();
 
-          cout << "\n";
         }
+        cout << "\n";
 
       }
       //cout << " arg stmn name: " << ;

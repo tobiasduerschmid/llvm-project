@@ -69,6 +69,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
       }
       //cout << " arg stmn name: " << ;
     }
+    cout << "\n";
 }
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,

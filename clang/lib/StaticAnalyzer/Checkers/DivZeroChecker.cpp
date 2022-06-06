@@ -19,7 +19,7 @@
 #include "clang/StaticAnalyzer/Core/PathSensitive/CheckerContext.h"
 #include "clang/StaticAnalyzer/Core/PathSensitive/SVals.h"
 #include <iostream>
-#include <unordered_map>
+#include <map>
 
 using namespace std;
 using namespace clang;
@@ -39,7 +39,7 @@ public:
                                   CheckerContext &C) const;
 
 private:
-  std::unordered_map<int, int> m_cMap;
+  std::map<int, int> m_cMap;
 };
 } // end anonymous namespace
 
@@ -83,6 +83,8 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
           cout << " getExtValue: " << i->getValue().getExtValue();
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
+          m_cMap[key] = value;
+
         }
         cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
         cout << "\n";

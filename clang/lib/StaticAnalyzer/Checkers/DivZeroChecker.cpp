@@ -68,14 +68,24 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
   if (const auto *ME = dyn_cast<MemberExpr>(E->getImplicitObjectArgument())) {
     cout << " MemberExpr: " << ME->getMemberNameInfo().getAsString();
   }
+  const DeclRefExpr* decl;
   if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getImplicitObjectArgument())) {
     cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
     if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
       cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
+      decl = SE;
     }
   } 
   if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
     cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
+    decl = ME;
+  }
+  if (decl) {
+    if (const auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
+      ProgramStateRef state = C.getState();
+      //DefinedOrUnknownSVal ElementCount = getDynamicElementCount(
+      //state, vd->getVa->getSuperRegion(), C.getSValBuilder(), ER->getValueType());
+    }
   }
     
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";

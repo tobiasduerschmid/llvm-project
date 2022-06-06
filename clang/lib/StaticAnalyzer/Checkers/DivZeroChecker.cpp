@@ -59,17 +59,19 @@ void DivZeroChecker::reportBug(
 }
 void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
                                   CheckerContext &C) const {
-    cout << "checkPostStmt";
-    cout << " constructor args: ";
     for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
         SVal Denom = C.getSVal(ic);
-        cout << " arg " << ic->getSubExpr()->getStmtClassName() << " denom: " << Denom.isUnknownOrUndef();
+        cout << "checkPostStmt: ";
+        cout << " constructor args: ";
+        cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+        cout << "isConstant(): " << Denom.isConstant();
+        cout << "\n";
+
       }
       //cout << " arg stmn name: " << ;
     }
-    cout << "\n";
 }
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,

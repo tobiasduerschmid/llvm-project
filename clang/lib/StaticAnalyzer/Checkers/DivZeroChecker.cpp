@@ -131,6 +131,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
           if(const int* result = state->get<RateFrequency>(key)) {
             int r = *result;
             cout << " getValue: " << r;
+          } else {
+            cout << " getValue: ERROR";
           }
         }
       }

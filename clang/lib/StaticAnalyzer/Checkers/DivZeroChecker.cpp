@@ -130,12 +130,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
           const int* result = state->get<RateFrequency>(key);
-          //cout << " getValue: " << result;
+          cout << " getValue: " << result;
         }
-        
-//        cout << "Denom: ";
-        //DefinedOrUnknownSVal ElementCount = getDynamicElementCount(
-        //state, vd->getVa->getSuperRegion(), C.getSValBuilder(), ER->getValueType());
       }
     }
   }

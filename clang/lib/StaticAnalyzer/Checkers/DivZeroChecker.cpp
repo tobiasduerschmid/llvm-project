@@ -58,7 +58,7 @@ void DivZeroChecker::reportBug(
   }
 }
 void DivZeroChecker::checkPreCall(const CallEvent &Call, CheckerContext &C) const {
-  if (Call.getSourceRange()->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
+  if (Call.getSourceRange().getBegin().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
     return;
   if (const AnyFunctionCall *AC = dyn_cast<AnyFunctionCall>(&Call)) {
     cout << "checkPreCall: " << AC->getDecl()->getNameAsString() << "\n";

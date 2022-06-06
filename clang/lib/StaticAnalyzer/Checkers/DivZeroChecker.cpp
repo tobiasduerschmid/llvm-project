@@ -121,7 +121,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
     decl = ME;
   }
-  if (decl) {
+  if (decl && decl->getDecl()) {
     if (const auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
       cout << "decl->getDecl()";
       if (vd && vd->hasInit()) {

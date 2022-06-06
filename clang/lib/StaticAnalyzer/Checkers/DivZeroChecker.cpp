@@ -133,7 +133,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
           int r = *result;
           cout << " getValue: " << r;
         }
-  */      }
+  */      
     }
   }
     

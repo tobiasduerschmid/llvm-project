@@ -63,6 +63,12 @@ void DivZeroChecker::checkPreStmt(const CallExpr *E,
 
   const FunctionDecl *func = E->getDirectCallee(); //gives you callee function
   string callee = func->getNameInfo().getName().getAsString();
+  if (const auto *ME = dyn_cast<ImplicitCastExpr>(E->getCallee())) {
+    cout << " ImplicitCastExpr: " << ME->getSubExpr()->getStmtClassName();
+    if (const auto *SE = dyn_cast<DeclRefExpr>(ME->getSubExpr())) {
+      cout << " DeclRefExpr: " << SE->getDecl()->getNameAsString();
+    }
+  } 
   cout << callee << " is called ";
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   cout << "\n";

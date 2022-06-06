@@ -25,7 +25,7 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr> > {
+class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>, check::PostStmt<DeclStmt> > {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
@@ -56,6 +56,11 @@ void DivZeroChecker::reportBug(
   }
 }
 
+void DivZeroChecker::checkPostStmt(const DeclStmt *S,
+                                  CheckerContext &C) const {
+  
+}
+
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
@@ -82,9 +87,13 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
   }
   if (decl) {
     if (const auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
-      ProgramStateRef state = C.getState();
-      //DefinedOrUnknownSVal ElementCount = getDynamicElementCount(
-      //state, vd->getVa->getSuperRegion(), C.getSValBuilder(), ER->getValueType());
+      if (vd->hasInit()) {
+        ProgramStateRef state = C.getState();
+        SVal Denom = C.getSVal(vd->getInit());
+        cout << "Denom: " <<  Denom;
+        //DefinedOrUnknownSVal ElementCount = getDynamicElementCount(
+        //state, vd->getVa->getSuperRegion(), C.getSValBuilder(), ER->getValueType());
+      }
     }
   }
     

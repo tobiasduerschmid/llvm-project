@@ -88,12 +88,14 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
           cout << " constructor args: ";
           for(auto arg: constructor->arguments()) {
-            cout << " arg stmn name: " << arg->getStmtClassName();
-
+            
+            SVal Denom = C.getSVal(vd->getInit());
+            Denom.dump();
+            //cout << " arg stmn name: " << ;
           }
         }
-        //SVal Denom = C.getSVal(vd->getInit());
-        cout << "Denom: ";
+        
+//        cout << "Denom: ";
         //DefinedOrUnknownSVal ElementCount = getDynamicElementCount(
         //state, vd->getVa->getSuperRegion(), C.getSValBuilder(), ER->getValueType());
       }

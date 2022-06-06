@@ -130,8 +130,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
           const int* result = state->get<RateFrequency>(key);
-          int result = *result;
-          cout << " getValue: " << result;
+          int r = *result;
+          cout << " getValue: " << r;
         }
       }
     }

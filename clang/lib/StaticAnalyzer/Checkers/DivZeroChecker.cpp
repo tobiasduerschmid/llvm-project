@@ -37,6 +37,9 @@ public:
   void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
   void checkPostStmt(const CXXConstructExpr *E,
                                   CheckerContext &C) const;
+
+private:
+  std::unordered_map<int64_t, int64_t> m_cMap;
 };
 } // end anonymous namespace
 
@@ -62,7 +65,7 @@ void DivZeroChecker::reportBug(
 }
 void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
                                   CheckerContext &C) const {
-    /*for(auto arg: constructor->arguments()) {
+    for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
         SVal Denom = C.getSVal(ic->getSubExpr());
@@ -78,13 +81,14 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
         if (i) {
           
           cout << " getExtValue: " << i->getValue().getExtValue();
+          m_cMap[constructor->getID(C.getASTContext())] = i->getValue().getExtValue();
 
         }
         cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
         cout << "\n";
 
       }
-    }*/
+    }
 }
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,

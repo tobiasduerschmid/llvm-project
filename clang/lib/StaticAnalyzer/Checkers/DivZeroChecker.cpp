@@ -83,6 +83,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
           cout << " getExtValue: " << i->getValue().getExtValue();
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
+          int value = i->getValue().getExtValue();
           m_cMap[key] = value;
 
         }

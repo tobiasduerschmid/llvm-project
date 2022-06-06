@@ -120,8 +120,8 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
   if (const auto *ME = dyn_cast<DeclRefExpr>(E->getImplicitObjectArgument())) {
     cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
     decl = ME;
-  }/*
-  if (decl) {
+  }
+  if (decl) {/*
     if (const auto *vd = dyn_cast<VarDecl>(decl->getDecl())) {
       cout << "decl->getDecl()";
       if (vd->hasInit()) {
@@ -135,7 +135,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
         }
       }
     }
-  }*/
+  */}
     
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   cout << "\n";

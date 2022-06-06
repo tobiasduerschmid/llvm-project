@@ -25,13 +25,15 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>> {
+class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>, check::PostStmt<CXXConstructExpr>> {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
   void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
+  void checkPostStmt(const CXXConstructExpr *E,
+                                  CheckerContext &C) const;
 };
 } // end anonymous namespace
 
@@ -54,6 +56,19 @@ void DivZeroChecker::reportBug(
     bugreporter::trackExpressionValue(N, getDenomExpr(N), *R);
     C.emitReport(std::move(R));
   }
+}
+void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
+                                  CheckerContext &C) const {
+    cout << "checkPostStmt";
+    cout << " constructor args: ";
+    for(auto arg: constructor->arguments()) {
+      //Denom.getAsSymbolicExpression()->
+      if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
+        SVal Denom = C.getSVal(ic);
+        cout << " arg " << ic->getSubExpr()->getStmtClassName() << " denom: " << Denom.isUnknownOrUndef();
+      }
+      //cout << " arg stmn name: " << ;
+    }
 }
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
@@ -86,7 +101,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
       if (vd->hasInit()) {
         ProgramStateRef state = C.getState();
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
-          cout << " constructor args: ";
+          /*cout << " constructor args: ";
           for(auto arg: constructor->arguments()) {
             //Denom.getAsSymbolicExpression()->
             if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
@@ -94,7 +109,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
               cout << " arg " << ic->getSubExpr()->getStmtClassName() << " denom: " << Denom.isUnknownOrUndef();
             }
             //cout << " arg stmn name: " << ;
-          }
+          }*/
         }
         
 //        cout << "Denom: ";

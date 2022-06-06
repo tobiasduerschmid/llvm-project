@@ -17,6 +17,7 @@
 #include "clang/StaticAnalyzer/Core/Checker.h"
 #include "clang/StaticAnalyzer/Core/CheckerManager.h"
 #include "clang/StaticAnalyzer/Core/PathSensitive/CheckerContext.h"
+#include "clang/StaticAnalyzer/Core/PathSensitive/CallEvent.h"
 #include <iostream>
 
 using namespace std;
@@ -25,13 +26,14 @@ using namespace ento;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CallExpr> > {
+class DivZeroChecker : public Checker<check::PreCall, check::PreStmt<CallExpr> > {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
   void checkPreStmt(const CallExpr *B, CheckerContext &C) const;
+  void checkPreCall(const CallEvent &Call, CheckerContext &C) const;
 };
 } // end anonymous namespace
 
@@ -53,6 +55,11 @@ void DivZeroChecker::reportBug(
     R->addVisitor(std::move(Visitor));
     bugreporter::trackExpressionValue(N, getDenomExpr(N), *R);
     C.emitReport(std::move(R));
+  }
+}
+void DivZeroChecker::checkPreCall(const CallEvent &Call, CheckerContext &C) const {
+  if (const AnyFunctionCall *AC = dyn_cast<AnyFunctionCall*>(Call)) {
+    cout << "checkPreCall: " << AC->getDecl()->getNameAsString() << "\n";
   }
 }
 

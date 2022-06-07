@@ -29,8 +29,6 @@ namespace ros
     template <typename M>
       void publish(const void* msg) const
     {
-      using namespace serialization;
-
     }
 
     template <typename M>

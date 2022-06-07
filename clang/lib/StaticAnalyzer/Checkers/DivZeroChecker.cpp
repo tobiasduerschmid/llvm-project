@@ -99,9 +99,6 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
-  if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
-    return;
-
   
   cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
   cout << " name: " << E->getMethodDecl()->getNameAsString();

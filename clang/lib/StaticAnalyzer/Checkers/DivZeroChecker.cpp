@@ -71,7 +71,8 @@ void DivZeroChecker::checkPreStmt(const CXXConstructExpr *constructor,
     for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
       //todo use arg->IgnoreImpCasts()
-      SVal Denom = C.getSVal(arg->IgnoreCasts());
+      arg = arg->IgnoreImpCasts();
+      SVal Denom = C.getSVal(arg);
       
       cout << "checkPostStmt: ";
 
@@ -107,7 +108,7 @@ void DivZeroChecker::checkPreStmt(const CallExpr *E,
                                   CheckerContext &C) const {
   cout << "DivZeroChecker::checkPreStmt\n";
   for(auto arg: E->arguments()) {
-    auto a = arg;//arg->IgnoreImplicit();
+    auto a = arg->IgnoreImpCasts();
     SVal Denom = C.getSVal(a);
     cout << "Denom ("<< a->getStmtClassName() <<"): ";
     Denom.dump();

@@ -16,7 +16,11 @@ class Rate
    int expected_cycle_time_, actual_cycle_time_;
  };
 
-void sleep(int r) {
+void sleep_i(int r) {
+  for(int i = 0; i < r; i++);
+}
+
+void sleep_d(double r) {
   for(int i = 0; i < r; i++);
 }
 
@@ -24,7 +28,7 @@ int main(int argc, char** argv) {
   int x = 10;
   int y = 20;
   if (y < argc) {
-  //  sleep(10);
-    Rate r(10);
+    sleep_i(20);
+    sleep_d(20);    
   }
 }

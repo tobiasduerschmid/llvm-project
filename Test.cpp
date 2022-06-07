@@ -253,7 +253,7 @@ int main(int argc, char** argv)
   }
 
   const int local_LOOP_RATE = 10;
-  ros::Rate loop_rate(local_LOOP_RATE);
+  ros::Rate loop_rate(10 + 0);
   while (true)
   {
 

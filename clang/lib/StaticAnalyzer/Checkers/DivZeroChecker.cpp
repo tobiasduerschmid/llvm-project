@@ -28,14 +28,14 @@ using namespace ento::nonloc;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CXXMemberCallExpr>, check::PostStmt<CXXConstructExpr>> {
+class DivZeroChecker : public Checker< check::PreStmt<CallExpr>, check::PreStmt<CXXConstructExpr>> {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const CXXMemberCallExpr *B, CheckerContext &C) const;
-  void checkPostStmt(const CXXConstructExpr *E,
+  void checkPreStmt(const CallExpr *B, CheckerContext &C) const;
+  void checkPreStmt(const CXXConstructExpr *E,
                                   CheckerContext &C) const;
 
 };
@@ -63,59 +63,67 @@ void DivZeroChecker::reportBug(
 }
 REGISTER_MAP_WITH_PROGRAMSTATE(RateFrequency, int, int)
 
-void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
+void DivZeroChecker::checkPreStmt(const CXXConstructExpr *constructor,
                                   CheckerContext &C) const {
+    if (constructor->getConstructor()->getNameAsString() != "Rate")
+        return;
+    
     for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
       //todo use arg->IgnoreImpCasts()
-      if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
-        SVal Denom = C.getSVal(ic->getSubExpr());
-        if (constructor->getConstructor()->getNameAsString() != "Rate")
-          return;
-        cout << "checkPostStmt: ";
+      SVal Denom = C.getSVal(arg->IgnoreCasts());
+      
+      cout << "checkPostStmt: ";
 
-        cout << " constructor args: ";
-        cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
-        cout << " isConstant(): " << Denom.isConstant();
+      cout << " constructor args: ";
+      cout << " arg " << arg->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+      if (Denom.isUnknownOrUndef()) {
+        cout << "Denom: ";
+        Denom.dump();
+        cout << "Arg: ";
+        arg->dump();
+      }
+      cout << " isConstant(): " << Denom.isConstant();
 
-        if (const auto *i = dyn_cast<ImplicitCastExpr>(ic->getSubExpr())) {
-          //Denom = C.getSVal(ref->getDecl());
-            Denom = C.getSVal(arg->IgnoreImplicit());
-            cout << " constructor args: ";
-            cout << " dump expr:\n";
-            arg->IgnoreImplicit()->dump();
-            cout << " dump begin\n";
-            Denom.dump();
-            cout << "\n dump end \n";
-            cout << " arg " << i->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
-            cout << " isConstant(): " << Denom.isConstant();
-        }
-
-        Optional<ConcreteInt> i = Denom.getAs<ConcreteInt>();
-        if (i) {
-          
-          cout << " getExtValue: " << i->getValue().getExtValue();
-          int key = constructor->getID(C.getASTContext());
-          cout << " getID: " << key;
-          int value = i->getValue().getExtValue();
-          ProgramStateRef state = C.getState()->set<RateFrequency>(key, value);
-          C.addTransition(state);
-          //const int* result = state->get<RateFrequency>(key);
-          //cout << " state: " << *result;
-
-        }
-        cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
-        cout << "\n";
+      Optional<ConcreteInt> i = Denom.getAs<ConcreteInt>();
+      if (i) {
+        
+        cout << " getExtValue: " << i->getValue().getExtValue();
+        int key = constructor->getID(C.getASTContext());
+        cout << " getID: " << key;
+        int value = i->getValue().getExtValue();
+        ProgramStateRef state = C.getState()->set<RateFrequency>(key, value);
+        C.addTransition(state);
+        //const int* result = state->get<RateFrequency>(key);
+        //cout << " state: " << *result;
 
       }
+      cout << " (" << constructor->getBeginLoc().printToString(C.getSourceManager()) << ":" << constructor->getEndLoc().printToString(C.getSourceManager()) << ")";
+      cout << "\n";
+
     }
 }
-
+void DivZeroChecker::checkPreStmt(const CallExpr *E,
+                                  CheckerContext &C) const {
+  cout << "DivZeroChecker::checkPreStmt\n";
+  for(auto arg: E->arguments()) {
+    auto a = arg;//arg->IgnoreImplicit();
+    SVal Denom = C.getSVal(a);
+    cout << "Denom ("<< a->getStmtClassName() <<"): ";
+    Denom.dump();
+    cout << "\n Statement:";
+    a->dump();
+    cout << "\n";
+  }
+  ProgramStateRef State = C.getState();
+  const LocationContext* LC = C.getLocationContext();
+  //LC->getCFG()->dump(LangOptions(),true);
+}
+/*
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
-  if (E->getBeginLoc().printToString(C.getSourceManager()).find("Test.cpp") == -1)
+  if (E->getBeginLoc().printToString(C.getSourceManager()).find("Test") == -1)
     return;
-
   
   cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
   cout << " name: " << E->getMethodDecl()->getNameAsString();
@@ -135,7 +143,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     cout << " DeclRefExpr: " << ME->getNameInfo().getAsString();
     declRef  = ME;
   }
-  if (declRef) {
+  if (declRef && declRef->getDecl()) {
     ////declRef->getDecl()->dump();
     //const_cast<ValueDecl*>(declRef->getDecl())->dump();
     if (auto *vd = dyn_cast<VarDecl>(declRef->getDecl())) {
@@ -152,13 +160,14 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
             cout << " getValue: ERROR";
           }
         }
-      }*/
+      }*//*
     }
   }
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   cout << "\n";
+  
 }
-
+*/
 void ento::registerDivZeroChecker(CheckerManager &mgr) {
   mgr.registerChecker<DivZeroChecker>();
 }

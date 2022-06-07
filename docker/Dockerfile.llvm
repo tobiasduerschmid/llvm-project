@@ -2,43 +2,24 @@ FROM rosdiscover-experiments/autoware:84169473a3f72aea8a400464f5b673f3c77c6b8c
 RUN sudo apt-get install -y software-properties-common \
 && add-apt-repository ppa:george-edison55/cmake-3.x \
 && apt-get update -y 
-RUN wget http://www.cmake.org/files/v3.13/cmake-3.13.4.tar.gz \
-&& tar -xvzf cmake-3.13.4.tar.gz \
-&& cd cmake-3.13.4/ \
+RUN wget http://www.cmake.org/files/v3.23/cmake-3.23.2.tar.gz \
+&& tar -xvzf cmake-3.23.2.tar.gz \
+&& cd cmake-3.23.2/ \
 && ./configure \
 && make  \
 && sudo make install && update-alternatives --install /usr/bin/cmake cmake /usr/local/bin/cmake 1 --force
 RUN cmake --version
-ARG LLVM_VERSION="11.1.0"
+ARG LLVM_VERSION="14.0.4"
 ARG LLVM_DIR=/opt/llvm11
 RUN git clone https://github.com/tobiasduerschmid/llvm-project.git /tmp/llvm \
  && cd /tmp/llvm \
- && git checkout "d50da807e6da5dde65f701952812a86608766b58"
+ && git checkout "7d6b6fe60ab21e1b053654be17d4ba0317ab7acf"
 RUN sudo apt-get install -y ninja-build
 RUN sudo add-apt-repository ppa:ubuntu-toolchain-r/test \
 && sudo apt-get update \
-&& sudo apt-get install -y gcc-5 g++-5 \
-&& sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-RUN cd /tmp/llvm \
- && mkdir build \
- && cd build \
- && cmake \
-    -DCMAKE_INSTALL_PREFIX="${LLVM_DIR}" \
-    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;libcxx;libcxxabi;lld" \
-    -DLLVM_ENABLE_ASSERTIONS=true \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DLLVM_PARALLEL_LINK_JOBS=1 \
-    -G Ninja \
-    ../llvm
-RUN cd /tmp/llvm/build \
- && ninja
+&& sudo apt-get install -y gcc-12 g++-12 \
+&& sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 60 --slave /usr/bin/g++ g++ /usr/bin/g++-12
 
-RUN cd /tmp/llvm/build \
- && git fetch && git checkout 342b1bbf4a93a2d6212dc6f52f0beb1fabe87a91 \
- && ninja \
- && ninja install
-#RUN . /opt/ros/indigo/setup.sh \
-# && eval 'cd /ros_ws/src/autoware/ros; export LIBRARY_PATH=/usr/lib/OpenNI2/Drivers:$LIBRARY_PATH; ./catkin_make_release -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_C_COMPILER=/opt/llvm11/bin/clang -DCMAKE_CXX_COMPILER=/opt/llvm11/bin/clang++ -DCMAKE_LINKER=/opt/llvm11/bin/ld.lld -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_LINK_EXECUTABLE=/opt/llvm11/bin/ld.lld ' 
 
 RUN sudo apt-get update && sudo apt-get install -y libgdm-dev libdb4o-cil-dev libpcap-dev \
       curl \
@@ -57,6 +38,7 @@ RUN sudo apt-get update && sudo apt-get install -y libgdm-dev libdb4o-cil-dev li
     libc6-dev \
     libbz2-dev
 
+
 RUN cd /tmp \ 
   && wget https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz \
   && tar -xf Python-3.8.3.tgz \ 
@@ -66,6 +48,26 @@ RUN cd /tmp \
   && alias python3='python3.8'
   
 
+RUN cd /tmp/llvm \
+ && mkdir build \
+ && cd build \
+ && cmake \
+    -DCMAKE_INSTALL_PREFIX="${LLVM_DIR}" \
+    -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;libcxx;libcxxabi;lld" \
+    -DLLVM_ENABLE_ASSERTIONS=true \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_PARALLEL_LINK_JOBS=1 \
+    -G Ninja \
+    ../llvm
+RUN cd /tmp/llvm/build \
+ && ninja
+
+RUN cd /tmp/llvm/build \
+ && git fetch && git checkout 7d6b6fe60ab21e1b053654be17d4ba0317ab7acf \
+ && ninja \
+ && ninja install
+#RUN . /opt/ros/indigo/setup.sh \
+# && eval 'cd /ros_ws/src/autoware/ros; export LIBRARY_PATH=/usr/lib/OpenNI2/Drivers:$LIBRARY_PATH; ./catkin_make_release -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_C_COMPILER=/opt/llvm11/bin/clang -DCMAKE_CXX_COMPILER=/opt/llvm11/bin/clang++ -DCMAKE_LINKER=/opt/llvm11/bin/ld.lld -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_LINK_EXECUTABLE=/opt/llvm11/bin/ld.lld ' 
 
 RUN git clone https://github.com/Ericsson/CodeChecker.git --depth 1 ~/codechecker \
   && cd ~/codechecker 

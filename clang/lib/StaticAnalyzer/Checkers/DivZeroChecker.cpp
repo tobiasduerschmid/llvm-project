@@ -67,6 +67,7 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
                                   CheckerContext &C) const {
     for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
+      //todo use arg->IgnoreImpCasts()
       if (const auto *ic = dyn_cast<ImplicitCastExpr>(arg)) {
         SVal Denom = C.getSVal(ic->getSubExpr());
         if (constructor->getConstructor()->getNameAsString() != "Rate")
@@ -78,10 +79,16 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
         cout << " isConstant(): " << Denom.isConstant();
 
         if (const auto *i = dyn_cast<ImplicitCastExpr>(ic->getSubExpr())) {
-          Denom = C.getSVal(i->getSubExpr());
-          cout << " constructor args: ";
-          cout << " arg " << i->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
-          cout << " isConstant(): " << Denom.isConstant();
+          //Denom = C.getSVal(ref->getDecl());
+            Denom = C.getSVal(arg->IgnoreImplicit());
+            cout << " constructor args: ";
+            cout << " dump expr:\n";
+            arg->IgnoreImplicit()->dump();
+            cout << " dump begin\n";
+            Denom.dump();
+            cout << "\n dump end \n";
+            cout << " arg " << i->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+            cout << " isConstant(): " << Denom.isConstant();
         }
 
         Optional<ConcreteInt> i = Denom.getAs<ConcreteInt>();

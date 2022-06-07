@@ -154,7 +154,7 @@ double steering_angle_ = 0;
 double lidar_height_ = 1.0;
 double wheel_base_ = 2.7;
 
-constexpr int LOOP_RATE = 50;  // 50Hz
+int LOOP_RATE = 50;  // 50Hz
 
 
 
@@ -252,7 +252,8 @@ int main(int argc, char** argv)
   {
   }
 
-  ros::Rate loop_rate(LOOP_RATE);
+  const int local_LOOP_RATE = 10;
+  ros::Rate loop_rate(local_LOOP_RATE);
   while (true)
   {
 

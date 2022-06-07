@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
   int x = 10;
   int y = 20;
   if (y < argc) {
-    sleep(10);
+  //  sleep(10);
+    Rate r(10);
   }
 }

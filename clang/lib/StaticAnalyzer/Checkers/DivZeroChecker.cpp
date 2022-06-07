@@ -99,6 +99,9 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
+  //if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
+  //  return;
+
   
   cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();
   cout << " name: " << E->getMethodDecl()->getNameAsString();
@@ -123,7 +126,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     //const_cast<ValueDecl*>(declRef->getDecl())->dump();
     if (auto *vd = dyn_cast<VarDecl>(declRef->getDecl())) {
       //const_cast<VarDecl*>(vd)->dump();
-      if (vd->hasInit()) {
+      /*if (vd->hasInit()) {
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
@@ -135,7 +138,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
             cout << " getValue: ERROR";
           }
         }
-      }
+      }*/
     }
   }
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";

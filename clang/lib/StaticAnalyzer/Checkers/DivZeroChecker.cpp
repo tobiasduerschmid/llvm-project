@@ -77,10 +77,10 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
         cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
         cout << " isConstant(): " << Denom.isConstant();
 
-        if (const auto *ic = dyn_cast<ImplicitCastExpr>(ic->getSubExpr())) {
-          Denom = C.getSVal(ic->getSubExpr());
+        if (const auto *i = dyn_cast<ImplicitCastExpr>(ic->getSubExpr())) {
+          Denom = C.getSVal(i->getSubExpr());
           cout << " constructor args: ";
-          cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+          cout << " arg " << i->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
           cout << " isConstant(): " << Denom.isConstant();
         }
 

@@ -77,6 +77,13 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
         cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
         cout << " isConstant(): " << Denom.isConstant();
 
+        if (const auto *ic = dyn_cast<ImplicitCastExpr>(ic->getSubExpr())) {
+          Denom = C.getSVal(ic->getSubExpr());
+          cout << " constructor args: ";
+          cout << " arg " << ic->getSubExpr()->getStmtClassName() << " isUnknownOrUndef(): " << Denom.isUnknownOrUndef();
+          cout << " isConstant(): " << Denom.isConstant();
+        }
+
         Optional<ConcreteInt> i = Denom.getAs<ConcreteInt>();
         if (i) {
           
@@ -99,8 +106,8 @@ void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
 
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
-  //if (E->getBeginLoc().printToString(C.getSourceManager()).find("wf_simulator.cpp") == -1)
-  //  return;
+  if (E->getBeginLoc().printToString(C.getSourceManager()).find("Test.cpp") == -1)
+    return;
 
   
   cout << "DivZeroChecker::checkPreStmt" << E->getImplicitObjectArgument()->getStmtClassName();

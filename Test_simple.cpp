@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
   int x = 10;
   int y = 20;
   if (y < argc) {
-    sleep_i(20);
-    sleep_d(20);    
+    sleep_i(20.0);
+    sleep_d(20.0);    
   }
 }

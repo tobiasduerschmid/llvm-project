@@ -28,15 +28,16 @@ using namespace ento::nonloc;
 using namespace taint;
 
 namespace {
-class DivZeroChecker : public Checker< check::PreStmt<CallExpr>, check::PreStmt<CXXConstructExpr>> {
+class DivZeroChecker : public Checker< check::PostStmt<CallExpr>, check::PostStmt<CXXConstructExpr>, check::PreStmt<CXXMemberCallExpr>> {
   mutable std::unique_ptr<BuiltinBug> BT;
   void reportBug(const char *Msg, ProgramStateRef StateZero, CheckerContext &C,
                  std::unique_ptr<BugReporterVisitor> Visitor = nullptr) const;
 
 public:
-  void checkPreStmt(const CallExpr *B, CheckerContext &C) const;
-  void checkPreStmt(const CXXConstructExpr *E,
+  void checkPostStmt(const CallExpr *B, CheckerContext &C) const;
+  void checkPostStmt(const CXXConstructExpr *E,
                                   CheckerContext &C) const;
+  void checkPreStmt(const CXXMemberCallExpr *E, CheckerContext &C) const;
 
 };
 } // end anonymous namespace
@@ -63,7 +64,7 @@ void DivZeroChecker::reportBug(
 }
 REGISTER_MAP_WITH_PROGRAMSTATE(RateFrequency, int, int)
 
-void DivZeroChecker::checkPreStmt(const CXXConstructExpr *constructor,
+void DivZeroChecker::checkPostStmt(const CXXConstructExpr *constructor,
                                   CheckerContext &C) const {
     if (constructor->getConstructor()->getNameAsString() != "Rate")
         return;
@@ -71,7 +72,7 @@ void DivZeroChecker::checkPreStmt(const CXXConstructExpr *constructor,
     for(auto arg: constructor->arguments()) {
       //Denom.getAsSymbolicExpression()->
       //todo use arg->IgnoreImpCasts()
-      arg = arg->IgnoreImpCasts();
+      //arg = arg->IgnoreImpCasts();
       SVal Denom = C.getSVal(arg);
       
       cout << "checkPostStmt: ";
@@ -104,23 +105,25 @@ void DivZeroChecker::checkPreStmt(const CXXConstructExpr *constructor,
 
     }
 }
-void DivZeroChecker::checkPreStmt(const CallExpr *E,
+void DivZeroChecker::checkPostStmt(const CallExpr *E,
                                   CheckerContext &C) const {
-  cout << "DivZeroChecker::checkPreStmt\n";
+  if (E->getBeginLoc().printToString(C.getSourceManager()).find("Test") == -1)
+    return;
+           /*                           
+  cout << "DivZeroChecker::checkPostStmt\n";
   for(auto arg: E->arguments()) {
-    auto a = arg->IgnoreImpCasts();
-    SVal Denom = C.getSVal(a);
-    cout << "Denom ("<< a->getStmtClassName() <<"): ";
+    SVal Denom = C.getSVal(arg);
+    cout << "Denom ("<< arg->getStmtClassName() <<"): ";
     Denom.dump();
     cout << "\n Statement:";
-    a->dump();
+    arg->dump();
     cout << "\n";
   }
   ProgramStateRef State = C.getState();
   const LocationContext* LC = C.getLocationContext();
-  //LC->getCFG()->dump(LangOptions(),true);
+  //LC->getCFG()->dump(LangOptions(),true);*/
 }
-/*
+
 void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
                                   CheckerContext &C) const {
   if (E->getBeginLoc().printToString(C.getSourceManager()).find("Test") == -1)
@@ -149,7 +152,7 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
     //const_cast<ValueDecl*>(declRef->getDecl())->dump();
     if (auto *vd = dyn_cast<VarDecl>(declRef->getDecl())) {
       //const_cast<VarDecl*>(vd)->dump();
-      /*if (vd->hasInit()) {
+      if (vd->hasInit()) {
         if (const auto *constructor = dyn_cast<CXXConstructExpr>(vd->getInit())) {
           int key = constructor->getID(C.getASTContext());
           cout << " getID: " << key;
@@ -161,14 +164,14 @@ void DivZeroChecker::checkPreStmt(const CXXMemberCallExpr *E,
             cout << " getValue: ERROR";
           }
         }
-      }*//*
+      }
     }
   }
   cout << " (" << E->getBeginLoc().printToString(C.getSourceManager()) << ":" << E->getEndLoc().printToString(C.getSourceManager()) << ")";
   cout << "\n";
   
 }
-*/
+
 void ento::registerDivZeroChecker(CheckerManager &mgr) {
   mgr.registerChecker<DivZeroChecker>();
 }
